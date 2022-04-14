@@ -3,6 +3,7 @@
 #include <array>
 #include <cstdlib>
 #include <cmath>
+#include <time.h>       // Incluyo la libreria time para usar time().
 #include "C2048.hpp"
 
 using namespace std;
@@ -94,31 +95,50 @@ namespace bblProgIIB
         void C2048::moverright(){}
 
         //Devuelve el estado del juego en dos variables una para indicar si el juego ha finalizado o no y la otra
-        // para indicar si hemos ganado.  Si el juego no ha finalizado, la variable win no es significativa, en 
+        //para indicar si hemos ganado.  Si el juego no ha finalizado, la variable win no es significativa, en 
         //caso de finalizar el juego, fin es true, win nos indica si hemos ganado o no.
         void C2048::estadojuego(bool &fin, bool &win){}
 
         //Comprueba si la posición x,y está libre
-        bool C2048::poslibre(int x, int y) const{}
+        bool C2048::poslibre(int x, int y) const{
+            return tablero[x][y] == 0;
+        }
 
         //Comprueba si quedan casillas libres en el tablero
-        bool C2048::libres()const{}
+        bool C2048::libres()const{
+            int cero = 0;
+            for(int i=0; i<4; i++){         // INICIALIZO LAS 16 POSICIONES A 0.
+                for(int j=0; i<4; i++){
+                    if(tablero[i][j]==0){
+                        cero = 1;
+                    }
+                }
+            } 
+            return cero;   
+        }
 
         // Genera aleatoriamente un 2 o un 4;
         // Los numeros aleatorios no son aleatorios sino son generados usando una ecuación que depende de un valor inicial
         // Si le paso un valor fijo siempre genera los mismos números aleatorios
         // Para que cambie le pasamos la hora actual (time(0) - segundos transcurridos desde el 1 de enero de 1970)
-        int C2048::generanum() const {}
+        int C2048::generanum() const {
+            int res = time(0) % 2;
+            return (res + 1) * 2;
+        }
 
         // Genera unas coordenadas aleatorias en una posición libre en el tablero y devuelve true si existen
         // posiciones libre y ha generado las coordenadas.
         void C2048::generaCoord(int &x, int &y, bool &vacia) const {}
 
         //Inserta num en las coordenadas x,y del tablero.
-        void C2048::insertanumero(const int &x, const int &y, const int &num){}
+        void C2048::insertanumero(const int &x, const int &y, const int &num){
+            tablero[x][y] = num;
+        }
         
         //Elimina num de las coordenadas x,y del tablero.        
-        void C2048::eliminanumero(const int &x, const int &y){}
+        void C2048::eliminanumero(const int &x, const int &y){
+            tablero[x][y] = 0;
+        }
 
         //Apila todos los números de una columna o una fila en el sentido del movimiento
         bool C2048::apilar(const char mov){} 
