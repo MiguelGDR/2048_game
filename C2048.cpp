@@ -3,146 +3,298 @@
 #include <array>
 #include <cstdlib>
 #include <cmath>
-#include <time.h>       // Incluyo la libreria time para usar time().
+#include <time.h> // Incluyo la libreria time para usar time().
 #include "C2048.hpp"
 
 using namespace std;
 
 namespace bblProgIIB
 {
-    C2048::C2048(){
-        for(int i=0; i<4; i++){         // INICIALIZO LAS 16 POSICIONES A 0.
-            for(int j=0; i<4; i++){
+    C2048::C2048()
+    {
+        for (int i = 0; i < 4; i++)
+        { // INICIALIZO LAS 16 POSICIONES A 0.
+            for (int j = 0; j < 4; j++)
+            {
                 tablero[i][j] = 0;
             }
         }
-        puntos = 0;                     // INICIALIZO LOS PUNTOS A 0.
+        puntos = 0; // INICIALIZO LOS PUNTOS A 0.
     }
-        // Constructor de copia
-    C2048::C2048(const C2048 &otro_tablero){
+    // Constructor de copia
+    C2048::C2048(const C2048 &otro_tablero)
+    {
         tablero = otro_tablero.tablero; // COPIO EL TABLERO.
         puntos = otro_tablero.puntos;   // COPIO LOS PUNTOS.
     }
-        // Destructor
+    // Destructor
     C2048::~C2048(){};
 
-        // Muestra el estado del juego después de un movimiento.
-        void C2048::mostrarTablero() const{
-            // system("clear"); // En Linux y Mac
-            system("cls");  // En Windows (MI CASO).
-            cout<<setw(12)<<"2048"<<setw(10)<<" "<<"Puntuación: "<<puntos<<endl;
+    // Muestra el estado del juego después de un movimiento.
+    void C2048::mostrarTablero() const
+    {
+        // system("clear"); // En Linux y Mac
+        system("cls"); // En Windows (MI CASO).
+        cout << setw(12) << "2048" << setw(10) << " "
+             << "Points: " << puntos << endl;
 
-            cout<<setw(2)<<"\u2554";
-            for(int i=0;i<=18;i++)
-                if (i == 4 || i == 9 || i == 14)
-                    cout << "\u2566";
-                else
-                    cout<<"\u2550";
-            cout<<"\u2557"<<endl;
-            for(int i=0;i<=3;i++) 
+        cout << setw(2) << "*";
+        for (int i = 0; i <= 18; i++)
+            if (i == 4 || i == 9 || i == 14)
+                cout << "*";
+            else
+                cout << "*";
+        cout << "*" << endl;
+        for (int i = 0; i <= 3; i++)
+        {
+            for (int j = 0; j <= 3; j++)
             {
-                for(int j=0;j<=3;j++)
+                if (tablero[i][j] == 0)
+                    cout << setw(2) << "*" << setw(4) << " ";
+                else
+                    cout << setw(2) << "*" << setw(4) << tablero[i][j];
+                if (j == 3 && i < 3)
                 {
-                    if(tablero[i][j]==0)
-                        cout<<setw(2)<<"\u2551"<<setw(4)<<" ";
-                    else
-                        cout<<setw(2)<<"\u2551"<<setw(4)<<tablero[i][j];
-                    if(j==3 && i < 3)
+                    cout << setw(2) << "*" << endl;
+                    cout << setw(2) << "*";
+                    for (int i = 0; i <= 18; i++)
+                        if (i == 4 || i == 9 || i == 14)
+                            cout << "*";
+                        else
+                            cout << "*";
+                    cout << setw(2) << "*" << endl;
+                }
+                if (i == 3 && j == 3)
+                {
+                    cout << setw(2) << "*" << endl;
+                    cout << setw(2) << "*";
+                    for (int i = 0; i <= 18; i++)
+                        if (i == 4 || i == 9 || i == 14)
+                            cout << "*";
+                        else
+                            cout << "*";
+                    cout << setw(2) << "*" << endl;
+                }
+            }
+        }
+    }
+
+    // Muestra la puntuación
+    int C2048::mostrarPuntos() const
+    {
+        return puntos;
+    }
+
+    // Inicia el juego.
+    void C2048::iniciarjuego()
+    {
+
+        srand(time(0)); // CAMBIO LA SEED
+        int x1 = rand() % 4;
+        int y1 = rand() % 4; // GENERO 4 NÚMEROS (DEL 0 AL 3) ALEATORIAMENTE.
+        int x2 = rand() % 4; // LOS USO COMO COORDENADAS PARA INICIAR EL TABLERO
+        int y2 = rand() % 4; // CON DOS 2.
+
+        tablero[x1][y1] = tablero[x2][y2] = 2;
+
+        return;
+    }
+
+    // Realiza el movimiento hacia arriba;
+    void C2048::moverup()
+    {
+        apilar('w');
+        sumar('w');
+        apilar('w'); // SI SUMA Y DEJA HUECOS, ESTE APILAR APILA
+    }
+
+    // Realiza el movimiento hacia abajo;
+    void C2048::moverdown()
+    {
+        char mov = 's';
+    }
+
+    // Realiza el movimiento hacia la izquierda;
+    void C2048::moverleft()
+    {
+        char move = 'a';
+    }
+
+    // Realiza el movimiento hacia la derecha;
+    void C2048::moverright()
+    {
+        char mov = 'd';
+    }
+
+    // HE CONSIDERADO AÑADIR ESTA FUNCION PARA UTILIZARLA DESPUES DEL void estadojuego(bool &fin, bool &win);
+    void C2048::addNum(const bool &fin)
+    {
+        if (!fin)
+        {
+            int num, x, y;
+            bool vacio;
+            num = generanum();
+            generaCoord(x, y, vacio);
+            if (vacio)
+            {
+                insertanumero(x, y, num);
+            }
+        }
+    }
+    // Devuelve el estado del juego en dos variables una para indicar si el juego ha finalizado o no y la otra
+    // para indicar si hemos ganado.  Si el juego no ha finalizado, la variable win no es significativa, en
+    // caso de finalizar el juego, fin es true, win nos indica si hemos ganado o no.
+    void C2048::estadojuego(bool &fin, bool &win)
+    {
+        if (!libres())
+        {
+            fin = 1;
+            win = 0;
+        }
+        for (int i = 0; i < 4; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (tablero[i][j] == 2048)
+                {
+                    fin = 1;
+                    win = 1;
+                }
+            }
+        }
+    }
+
+    // AQUI COMIENZAN LOS MÉTODOS PRIVADOS
+    // Comprueba si la posición x,y está libre
+    bool C2048::poslibre(int x, int y) const
+    {
+        return tablero[x][y] == 0;
+    }
+
+    // Comprueba si quedan casillas libres en el tablero
+    bool C2048::libres() const
+    {
+        int flag = 0;
+        for (int i = 0; i < 4; i++)
+        { // INICIALIZO LAS 16 POSICIONES A 0.
+            for (int j = 0; j < 4; j++)
+            {
+                if (tablero[i][j] == 0)
+                {
+                    flag = 1;
+                }
+            }
+        }
+        return flag;
+    }
+
+    // Genera aleatoriamente un 2 o un 4;
+    // Los numeros aleatorios no son aleatorios sino son generados usando una ecuación que depende de un valor inicial
+    // Si le paso un valor fijo siempre genera los mismos números aleatorios
+    // Para que cambie le pasamos la hora actual (time(0) - segundos transcurridos desde el 1 de enero de 1970)
+    int C2048::generanum() const
+    {
+        srand(time(0));
+        int res = rand() % 2;
+        return (res + 1) * 2;
+    }
+
+    // Genera unas coordenadas aleatorias en una posición libre en el tablero y devuelve true si existen
+    // posiciones libre y ha generado las coordenadas.
+    void C2048::generaCoord(int &x, int &y, bool &vacia) const
+    {
+        srand(time(0)); // CAMBIO LA SEED
+        int xgen = rand() % 4;
+        int ygen = rand() % 4;
+        if (libres())
+        {
+            vacia = true;
+            while (!poslibre(xgen, ygen))
+            {
+                xgen = rand() % 4;
+                ygen = rand() % 4; // GENERO DE NUEVO OTRAS COORDENADAS
+            }
+            x = xgen; // GUARDO LAS COORDENADAS DE LA POSICION LIBRE
+            y = ygen;
+        }
+        else
+        {
+            vacia = false;
+        }
+        return;
+    }
+
+    // Inserta num en las coordenadas x,y del tablero.
+    void C2048::insertanumero(const int &x, const int &y, const int &num)
+    {
+        tablero[x][y] = num;
+        return;
+    }
+
+    // Elimina num de las coordenadas x,y del tablero.
+    void C2048::eliminanumero(const int &x, const int &y)
+    {
+        tablero[x][y] = 0;
+        return;
+    }
+
+    // Apila todos los números de una columna o una fila en el sentido del movimiento
+    bool C2048::apilar(const char mov)
+    {
+        int flag = 0;
+        if (mov == 'w')
+        {
+            for (int a = 0; a < 3; a++)
+            {
+                for (int j = 0; j < 4; j++) // APILO
+                {
+                    for (int i = 0; i < 3; i++)
                     {
-                        cout<<setw(2)<<"\u2551"<<endl;
-                        cout<<setw(2)<<"\u2560";
-                        for(int i=0;i<=18;i++)
-                            if (i == 4 || i == 9 || i == 14)
-                                cout<<"\u256c";
-                            else
-                                cout<<"\u2550";
-                        cout<<setw(2)<<"\u2563"<<endl;
-                    }
-                    if (i == 3 && j == 3)
-                    {
-                        cout<<setw(2)<<"\u2551"<<endl;
-                        cout<<setw(2)<<"\u255a";
-                        for(int i=0;i<=18;i++)
-                            if (i == 4 || i == 9 || i == 14)
-                                cout<<"\u2569";
-                            else
-                                cout<<"\u2550";
-                        cout<<setw(2)<<"\u255d"<<endl; 
+                        if (tablero[i][j] == 0)
+                        {
+                            tablero[i][j] = tablero[i + 1][j];
+                            eliminanumero(i + 1, j);
+                            flag = 1;
+                        }
                     }
                 }
             }
-
         }
-        
-        // Muestra la puntuación
-        int C2048::mostrarPuntos() const{
-            cout << puntos << endl;
+        if (mov == 'd')
+        {
+
+            flag = 1;
         }
+        if (mov == 'r')
+        {
 
-        // Inicia el juego.
-        void C2048::iniciarjuego(){}
-        
-        // Realiza el movimiento hacia arriba;
-        void C2048::moverup(){}
-
-        // Realiza el movimiento hacia abajo;
-        void C2048::moverdown(){}
-
-        // Realiza el movimiento hacia la izquierda;
-        void C2048::moverleft(){}
-
-        // Realiza el movimiento hacia la derecha;
-        void C2048::moverright(){}
-
-        //Devuelve el estado del juego en dos variables una para indicar si el juego ha finalizado o no y la otra
-        //para indicar si hemos ganado.  Si el juego no ha finalizado, la variable win no es significativa, en 
-        //caso de finalizar el juego, fin es true, win nos indica si hemos ganado o no.
-        void C2048::estadojuego(bool &fin, bool &win){}
-
-        //Comprueba si la posición x,y está libre
-        bool C2048::poslibre(int x, int y) const{
-            return tablero[x][y] == 0;
+            flag = 1;
         }
+        if (mov == 'l')
+        {
 
-        //Comprueba si quedan casillas libres en el tablero
-        bool C2048::libres()const{
-            int cero = 0;
-            for(int i=0; i<4; i++){         // INICIALIZO LAS 16 POSICIONES A 0.
-                for(int j=0; i<4; i++){
-                    if(tablero[i][j]==0){
-                        cero = 1;
+            flag = 1;
+        }
+        return flag;
+    }
+
+    // Calcula la suma de los puntos de las casillas adyacentes con valores iguales en el sentido del movimiento
+    void C2048::sumar(const char mov)
+    {
+        if (mov == 'w')
+        {
+            for (int j = 0; j < 4; j++) // APILO
+            {
+                for (int i = 0; i < 3; i++)
+                {
+                    if (tablero[i][j] == tablero[i + 1][j])
+                    {
+                        tablero[i][j] += tablero[i + 1][j];
+                        puntos += tablero[i][j];
+                        eliminanumero(i + 1, j);
                     }
                 }
-            } 
-            return cero;   
+            }
         }
-
-        // Genera aleatoriamente un 2 o un 4;
-        // Los numeros aleatorios no son aleatorios sino son generados usando una ecuación que depende de un valor inicial
-        // Si le paso un valor fijo siempre genera los mismos números aleatorios
-        // Para que cambie le pasamos la hora actual (time(0) - segundos transcurridos desde el 1 de enero de 1970)
-        int C2048::generanum() const {
-            int res = time(0) % 2;
-            return (res + 1) * 2;
-        }
-
-        // Genera unas coordenadas aleatorias en una posición libre en el tablero y devuelve true si existen
-        // posiciones libre y ha generado las coordenadas.
-        void C2048::generaCoord(int &x, int &y, bool &vacia) const {}
-
-        //Inserta num en las coordenadas x,y del tablero.
-        void C2048::insertanumero(const int &x, const int &y, const int &num){
-            tablero[x][y] = num;
-        }
-        
-        //Elimina num de las coordenadas x,y del tablero.        
-        void C2048::eliminanumero(const int &x, const int &y){
-            tablero[x][y] = 0;
-        }
-
-        //Apila todos los números de una columna o una fila en el sentido del movimiento
-        bool C2048::apilar(const char mov){} 
-        
-        //Calcula la suma de los puntos de las casillas adyacentes con valores iguales en el sentido del movimiento
-        void C2048::sumar(const char mov){}
-}// Fin namespace bblProgIIB
+    }
+} // Fin namespace bblProgIIB
