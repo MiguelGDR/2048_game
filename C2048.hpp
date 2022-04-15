@@ -38,6 +38,9 @@ namespace bblProgIIB
             // Realiza el movimiento hacia la derecha;
             void moverright();
 
+            // HE CONSIDERADO AÑADIR ESTA FUNCION PARA UTILIZARLA DESPUES DE void estadojuego(bool &fin, bool &win);
+            void addNum(const bool &fin);
+
             //Devuelve el estado del juego en dos variables una para indicar si el juego ha finalizado o no y la otra
             // para indicar si hemos ganado.  Si el juego no ha finalizado, la variable win no es significativa, en 
             //caso de finalizar el juego, fin es true, win nos indica si hemos ganado o no.
