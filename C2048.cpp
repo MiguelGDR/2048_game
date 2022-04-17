@@ -119,13 +119,17 @@ namespace bblProgIIB
     // Realiza el movimiento hacia la izquierda;
     void C2048::moverleft()
     {
-        char move = 'a';
+        apilar('a');
+        sumar('a');
+        apilar('a');
     }
 
     // Realiza el movimiento hacia la derecha;
     void C2048::moverright()
     {
-        char mov = 'd';
+        apilar('d');
+        sumar('d');
+        apilar('d');
     }
 
     // HE CONSIDERADO AÑADIR ESTA FUNCION PARA UTILIZARLA DESPUES DEL void estadojuego(bool &fin, bool &win);
@@ -150,6 +154,7 @@ namespace bblProgIIB
     {
         if (!libres())
         {
+            
             fin = 1;
             win = 0;
         }
@@ -244,6 +249,7 @@ namespace bblProgIIB
     bool C2048::apilar(const char mov)
     {
         int flag = 0;
+        // APILAR HACIA ARRBIA
         if (mov == 'w')
         {
             for (int a = 0; a < 3; a++) // REPITO 3 VECES PARA MOVER LAS CASILLAS MÁS LEJANAS
@@ -262,6 +268,7 @@ namespace bblProgIIB
                 }
             }
         }
+        // APILAR HACIA ABAJO
         if (mov == 's')
         {
             for (int a = 0; a < 3; a++)
@@ -280,15 +287,43 @@ namespace bblProgIIB
                 }
             }
         }
+        // APILAR HACIA LA IZQ.
         if (mov == 'a')
         {
-
-            flag = 1;
+            for (int a = 0; a < 3; a++)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        if (tablero[i][j] == 0)
+                        {
+                            tablero[i][j] = tablero[i][j + 1];
+                            eliminanumero(i, j + 1);
+                            flag = 1;
+                        }
+                    }
+                }
+            }
         }
+        // APILAR HACIA LA DER.
         if (mov == 'd')
         {
-
-            flag = 1;
+            for (int a = 0; a < 3; a++)
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 3; j > 0; j--)
+                    {
+                        if (tablero[i][j] == 0)
+                        {
+                            tablero[i][j] = tablero[i][j - 1];
+                            eliminanumero(i, j - 1);
+                            flag = 1;
+                        }
+                    }
+                }
+            }
         }
         return flag;
     }
@@ -312,7 +347,6 @@ namespace bblProgIIB
                 }
             }
         }
-
         // SUMA HACIA ABAJO
         if (mov == 's')
         {
@@ -326,6 +360,39 @@ namespace bblProgIIB
                         puntos += tablero[i][j];
                         eliminanumero(i - 1, j);
                     }
+                }
+            }
+        }
+        // SUMA HACIA LA IZQ.
+        if (mov == 'a')
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 0; j < 3; j++)
+                {
+                    if (tablero[i][j] == tablero[i][j + 1])
+                    {
+                        tablero[i][j] += tablero[i][j + 1];
+                        puntos += tablero[i][j];
+                        eliminanumero(i, j + 1);
+                    }
+                }
+            }
+        }
+        // SUMA HACIA LA DER.
+        if (mov == 'd')
+        {
+            for (int i = 0; i < 4; i++)
+            {
+                for (int j = 3; j > 0; j--)
+                {
+                    if (tablero[i][j] == tablero[i][j - 1])
+                    {
+                        tablero[i][j] += tablero[i][j -1 ];
+                        puntos += tablero[i][j];
+                        eliminanumero(i, j - 1);
+                    }
+                    
                 }
             }
         }
