@@ -105,7 +105,8 @@ namespace bblProgIIB
     {
         apilar('w');
         sumar('w');
-        apilar('w'); // LA SUMA ANTERIOR PODRÏA HABER DEJADO HUECOS, POR ESO APILO DE NUEVO
+        apilar('w'); // LA SUMA ANTERIOR PODRÍA HABER DEJADO HUECOS, POR ESO APILO DE NUEVO
+        addNum();
     }
 
     // Realiza el movimiento hacia abajo;
@@ -114,6 +115,7 @@ namespace bblProgIIB
         apilar('s');
         sumar('s');
         apilar('s');
+        addNum();
     }
 
     // Realiza el movimiento hacia la izquierda;
@@ -122,6 +124,7 @@ namespace bblProgIIB
         apilar('a');
         sumar('a');
         apilar('a');
+        addNum();
     }
 
     // Realiza el movimiento hacia la derecha;
@@ -130,23 +133,9 @@ namespace bblProgIIB
         apilar('d');
         sumar('d');
         apilar('d');
+        addNum();
     }
 
-    // HE CONSIDERADO AÑADIR ESTA FUNCION PARA UTILIZARLA DESPUES DEL void estadojuego(bool &fin, bool &win);
-    void C2048::addNum(const bool &fin)
-    {
-        if (!fin)
-        {
-            int num, x, y;
-            bool vacio;
-            num = generanum();
-            generaCoord(x, y, vacio);
-            if (vacio)
-            {
-                insertanumero(x, y, num);
-            }
-        }
-    }
     // Devuelve el estado del juego en dos variables una para indicar si el juego ha finalizado o no y la otra
     // para indicar si hemos ganado.  Si el juego no ha finalizado, la variable win no es significativa, en
     // caso de finalizar el juego, fin es true, win nos indica si hemos ganado o no.
@@ -154,10 +143,34 @@ namespace bblProgIIB
     {
         if (!libres())
         {
-            
-            fin = 1;
+            fin = 1; // SI EL TABLERO ESTÁ LLENO, PONGO LA CONDICIÓN fin A 1.
             win = 0;
+
+            // SI EL TABLERO ESTA LLENO, PERO SE PUEDE SEGUIR JUGANDO, LA CONDICIÓN fin VOLVERÁ A 0.
+            for (int i = 0; i < 3; i++) // COMPRUEBO EN SENTIDO VERTICAL
+            {
+                for (int j = 0; j < 4; j++)
+                {
+                    if (tablero[i][j] == tablero[i + 1][j])
+                    {
+                        fin = 0;
+                    }
+                }
+            }
+
+            for (int j = 0; j < 3; j++) // COMPRUEBO EN SENTIDO HORIZONTAL
+            {
+                for (int i = 0; i < 4; i++)
+                {
+                    if (tablero[i][j] == tablero[i][j + 1])
+                    {
+                        fin = 0;
+                    }
+                }
+            }
         }
+
+        // CONDICION DE VICTORIA
         for (int i = 0; i < 4; i++)
         {
             for (int j = 0; j < 4; j++)
@@ -235,6 +248,20 @@ namespace bblProgIIB
     void C2048::insertanumero(const int &x, const int &y, const int &num)
     {
         tablero[x][y] = num;
+        return;
+    }
+
+    // HE CONSIDERADO AÑADIR ESTA FUNCION PARA SIMPLIFICAR EL AÑADIR UN NUMERO DESPUES DE CADA MOVIMIENTO
+    void C2048::addNum()
+    {
+        int num, x, y;
+        bool vacio;
+        num = generanum();
+        generaCoord(x, y, vacio);
+        if (vacio)
+        {
+            insertanumero(x, y, num);
+        }
         return;
     }
 
@@ -388,11 +415,10 @@ namespace bblProgIIB
                 {
                     if (tablero[i][j] == tablero[i][j - 1])
                     {
-                        tablero[i][j] += tablero[i][j -1 ];
+                        tablero[i][j] += tablero[i][j - 1];
                         puntos += tablero[i][j];
                         eliminanumero(i, j - 1);
                     }
-                    
                 }
             }
         }

@@ -36,7 +36,6 @@ int main(){
             break;
         }
         juego.estadojuego(fin,win);
-        juego.addNum(fin);
         juego.mostrarTablero();
     }
 
