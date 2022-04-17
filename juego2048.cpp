@@ -44,7 +44,7 @@ int main(){
         cout << "Congratulations!" << endl;
     }
     else{
-        cout << "F in the chat" << endl;
+        cout << "Game over :(" << endl;
     }
 
     system("pause");

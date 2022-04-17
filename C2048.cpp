@@ -105,13 +105,15 @@ namespace bblProgIIB
     {
         apilar('w');
         sumar('w');
-        apilar('w'); // SI SUMA Y DEJA HUECOS, ESTE APILAR APILA
+        apilar('w'); // LA SUMA ANTERIOR PODRÏA HABER DEJADO HUECOS, POR ESO APILO DE NUEVO
     }
 
     // Realiza el movimiento hacia abajo;
     void C2048::moverdown()
     {
-        char mov = 's';
+        apilar('s');
+        sumar('s');
+        apilar('s');
     }
 
     // Realiza el movimiento hacia la izquierda;
@@ -244,11 +246,11 @@ namespace bblProgIIB
         int flag = 0;
         if (mov == 'w')
         {
-            for (int a = 0; a < 3; a++)
+            for (int a = 0; a < 3; a++) // REPITO 3 VECES PARA MOVER LAS CASILLAS MÁS LEJANAS
             {
-                for (int j = 0; j < 4; j++) // APILO
+                for (int j = 0; j < 4; j++) // COLUMNAS
                 {
-                    for (int i = 0; i < 3; i++)
+                    for (int i = 0; i < 3; i++) // FILAS
                     {
                         if (tablero[i][j] == 0)
                         {
@@ -260,17 +262,30 @@ namespace bblProgIIB
                 }
             }
         }
+        if (mov == 's')
+        {
+            for (int a = 0; a < 3; a++)
+            {
+                for (int j = 0; j < 4; j++) // COLUMNAS
+                {
+                    for (int i = 3; i > 0; i--) // FILAS
+                    {
+                        if (tablero[i][j] == 0)
+                        {
+                            tablero[i][j] = tablero[i - 1][j];
+                            eliminanumero(i - 1, j);
+                            flag = 1;
+                        }
+                    }
+                }
+            }
+        }
+        if (mov == 'a')
+        {
+
+            flag = 1;
+        }
         if (mov == 'd')
-        {
-
-            flag = 1;
-        }
-        if (mov == 'r')
-        {
-
-            flag = 1;
-        }
-        if (mov == 'l')
         {
 
             flag = 1;
@@ -281,9 +296,10 @@ namespace bblProgIIB
     // Calcula la suma de los puntos de las casillas adyacentes con valores iguales en el sentido del movimiento
     void C2048::sumar(const char mov)
     {
+        // SUMA HACIA ARRIBA
         if (mov == 'w')
         {
-            for (int j = 0; j < 4; j++) // APILO
+            for (int j = 0; j < 4; j++)
             {
                 for (int i = 0; i < 3; i++)
                 {
@@ -292,6 +308,23 @@ namespace bblProgIIB
                         tablero[i][j] += tablero[i + 1][j];
                         puntos += tablero[i][j];
                         eliminanumero(i + 1, j);
+                    }
+                }
+            }
+        }
+
+        // SUMA HACIA ABAJO
+        if (mov == 's')
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                for (int i = 3; i > 0; i--)
+                {
+                    if (tablero[i][j] == tablero[i - 1][j])
+                    {
+                        tablero[i][j] += tablero[i - 1][j];
+                        puntos += tablero[i][j];
+                        eliminanumero(i - 1, j);
                     }
                 }
             }
