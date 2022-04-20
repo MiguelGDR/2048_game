@@ -5,6 +5,7 @@
 #include <cmath>
 #include <time.h> // Incluyo la libreria time para usar time().
 #include "C2048.hpp"
+#include <fstream>
 
 using namespace std;
 
@@ -88,6 +89,14 @@ namespace bblProgIIB
     // Inicia el juego.
     void C2048::iniciarjuego()
     {
+        for (int i = 0; i < 4; i++)
+        { // INICIALIZO LAS 16 POSICIONES A 0.
+            for (int j = 0; j < 4; j++)
+            {
+                tablero[i][j] = 0;
+            }
+        }
+        puntos = 0; // INICIALIZO LOS PUNTOS A 0.
 
         srand(time(0)); // CAMBIO LA SEED
         int x1 = rand() % 4;
@@ -182,6 +191,30 @@ namespace bblProgIIB
                 }
             }
         }
+    }
+
+    void C2048::maxpunt(char a)
+    {
+        ifstream flujo_ent;
+        unsigned int i;
+        flujo_ent.open("points.txt");
+        flujo_ent >> i;
+
+        if (a == 's' && i < puntos)
+        {
+            ofstream flujo_sal;
+            flujo_sal.open("points.txt");
+            flujo_sal << puntos;
+            flujo_sal.close();
+        }
+
+        if (a == 'e')
+        {
+            cout << endl;
+            cout << "La mayor puntuacion obtenida es: " << i << endl;
+            system("pause");
+        }
+        flujo_ent.close();
     }
 
     // AQUI COMIENZAN LOS MÉTODOS PRIVADOS

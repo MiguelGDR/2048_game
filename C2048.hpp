@@ -42,6 +42,8 @@ namespace bblProgIIB
         // caso de finalizar el juego, fin es true, win nos indica si hemos ganado o no.
         void estadojuego(bool &fin, bool &win);
 
+        void maxpunt(char a);
+
     private:
         Tablero tablero;
         unsigned puntos;
